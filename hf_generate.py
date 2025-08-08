@@ -407,7 +407,7 @@ class GenerationStudio:
             task = progress.add_task("🎭 Batch Generation", total=len(prompts))
             
             for prompt in prompts:
-                result = self.generate_text(prompt, style)
+                result = self.generate_text(prompt, style, show_status=False)  # Disable status during batch
                 if result:
                     results.append(result)
                 progress.advance(task)
