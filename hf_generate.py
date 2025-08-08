@@ -463,12 +463,29 @@ def generate(
     max_length: int = typer.Option(150, help="Maximum generation length"),
     temperature: float = typer.Option(0.7, help="Creativity level (0.1-2.0)"),
     style: GenerationStyle = typer.Option(GenerationStyle.CREATIVE, help="Generation style"),
-    save_output: bool = typer.Option(False, "--save", help="Save output to file")
+    save_output: bool = typer.Option(False, "--save", help="Save output to file"),
+    model: str = typer.Option(None, "--model", help="Model to use (auto-loads if not specified)")
 ):
     """✨ Generate text with enhanced controls"""
     
     console.print(f"\n🎪 [bold]Generating with style: {style.value}[/bold]")
     console.print(Panel(prompt, title="📝 Your Prompt", border_style="blue"))
+    
+    # Auto-load model if not already loaded
+    if not model_manager.current_model:
+        model_to_use = model or config_manager.config["default_model"]
+        console.print(f"🧠 [blue]Auto-loading model: {model_to_use}[/blue]")
+        success = model_manager.load_model(model_to_use)
+        if not success:
+            console.print("💔 [bold red]Failed to load model![/bold red]")
+            return
+    elif model and model != model_manager.current_model:
+        # User specified a different model
+        console.print(f"🔄 [blue]Loading requested model: {model}[/blue]")
+        success = model_manager.load_model(model)
+        if not success:
+            console.print("💔 [bold red]Failed to load requested model![/bold red]")
+            return
     
     # Create custom config if parameters provided
     custom_config = GenerationConfig(
