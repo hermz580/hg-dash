@@ -337,7 +337,8 @@ class GenerationStudio:
         self,
         prompt: str,
         style: GenerationStyle = GenerationStyle.CREATIVE,
-        custom_config: Optional[GenerationConfig] = None
+        custom_config: Optional[GenerationConfig] = None,
+        show_status: bool = True
     ) -> Optional[GenerationResult]:
         """Generate text with comprehensive error handling and timing"""
         
@@ -353,43 +354,50 @@ class GenerationStudio:
         
         start_time = time.time()
         
-        with Status(f"🎨 [bold magenta]Crafting your {style.value} creation...", console=console):
-            try:
-                result = model(
-                    prompt,
-                    max_length=config.max_length,
-                    min_length=config.min_length,
-                    temperature=config.temperature,
-                    top_p=config.top_p,
-                    top_k=config.top_k,
-                    repetition_penalty=config.repetition_penalty,
-                    do_sample=config.do_sample,
-                    pad_token_id=model.tokenizer.eos_token_id if hasattr(model, 'tokenizer') else None
-                )
-                
-                generation_time = time.time() - start_time
-                generated_text = result[0]['generated_text']
-                
-                # Create result object
-                generation_result = GenerationResult(
-                    prompt=prompt,
-                    generated_text=generated_text,
-                    timestamp=datetime.now().isoformat(),
-                    model_name=self.model_manager.current_model,
-                    config=config,
-                    generation_time=generation_time,
-                    token_count=len(generated_text.split())
-                )
-                
-                # Store in history
-                self.generation_history.append(generation_result)
-                self.save_history()
-                
-                return generation_result
-                
-            except Exception as e:
-                console.print(f"💥 [bold red]Generation failed: {str(e)}[/bold red]")
-                return None
+        if show_status:
+            with Status(f"🎨 [bold magenta]Crafting your {style.value} creation...", console=console):
+                return self._perform_generation(prompt, model, config, start_time)
+        else:
+            return self._perform_generation(prompt, model, config, start_time)
+    
+    def _perform_generation(self, prompt: str, model, config: GenerationConfig, start_time: float) -> Optional[GenerationResult]:
+        """Internal method to perform the actual generation"""
+        try:
+            result = model(
+                prompt,
+                max_length=config.max_length,
+                min_length=config.min_length,
+                temperature=config.temperature,
+                top_p=config.top_p,
+                top_k=config.top_k,
+                repetition_penalty=config.repetition_penalty,
+                do_sample=config.do_sample,
+                pad_token_id=model.tokenizer.eos_token_id if hasattr(model, 'tokenizer') else None
+            )
+            
+            generation_time = time.time() - start_time
+            generated_text = result[0]['generated_text']
+            
+            # Create result object
+            generation_result = GenerationResult(
+                prompt=prompt,
+                generated_text=generated_text,
+                timestamp=datetime.now().isoformat(),
+                model_name=self.model_manager.current_model,
+                config=config,
+                generation_time=generation_time,
+                token_count=len(generated_text.split())
+            )
+            
+            # Store in history
+            self.generation_history.append(generation_result)
+            self.save_history()
+            
+            return generation_result
+            
+        except Exception as e:
+            console.print(f"💥 [bold red]Generation failed: {str(e)}[/bold red]")
+            return None
     
     def batch_generate(self, prompts: List[str], style: GenerationStyle = GenerationStyle.CREATIVE) -> List[GenerationResult]:
         """Generate text for multiple prompts"""
