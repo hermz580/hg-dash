@@ -197,7 +197,7 @@ class ModelManager:
             return False
         
         with Progress(
-            SpinnerColumn(spinner_style="cyan"),
+            SpinnerColumn(),
             TextColumn("[bold blue]{task.description}"),
             BarColumn(),
             TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
