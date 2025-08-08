@@ -522,7 +522,8 @@ def generate(
 def batch(
     file: str = typer.Argument(..., help="File containing prompts (one per line)"),
     style: GenerationStyle = typer.Option(GenerationStyle.CREATIVE, help="Generation style"),
-    output_dir: str = typer.Option("batch_output", help="Output directory")
+    output_dir: str = typer.Option("batch_output", help="Output directory"),
+    model: str = typer.Option(None, "--model", help="Model to use (auto-loads if not specified)")
 ):
     """🎭 Batch generate from file of prompts"""
     
@@ -532,6 +533,22 @@ def batch(
     except FileNotFoundError:
         console.print(f"❌ [red]File not found: {file}[/red]")
         return
+    
+    # Auto-load model if not already loaded
+    if not model_manager.current_model:
+        model_to_use = model or config_manager.config["default_model"]
+        console.print(f"🧠 [blue]Auto-loading model: {model_to_use}[/blue]")
+        success = model_manager.load_model(model_to_use)
+        if not success:
+            console.print("💔 [bold red]Failed to load model![/bold red]")
+            return
+    elif model and model != model_manager.current_model:
+        # User specified a different model
+        console.print(f"🔄 [blue]Loading requested model: {model}[/blue]")
+        success = model_manager.load_model(model)
+        if not success:
+            console.print("💔 [bold red]Failed to load requested model![/bold red]")
+            return
     
     console.print(f"📚 [blue]Processing {len(prompts)} prompts...[/blue]")
     
