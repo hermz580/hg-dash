@@ -22,12 +22,14 @@ import time
 import json
 import os
 import sys
+import shutil
 from pathlib import Path
 from datetime import datetime
 from dataclasses import dataclass, asdict
 from enum import Enum
 import logging
 from contextlib import contextmanager
+import hashlib
 
 # Hugging Face imports with better error handling
 try:
