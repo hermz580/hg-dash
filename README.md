@@ -17,6 +17,18 @@
 
 ### 🚀 Quick Start
 
+#### Running the Web Application (Frontend and Backend)
+To run the web application, which includes a frontend and a backend server, you can use the provided development script. This will start both servers and handle dependencies for you.
+```bash
+./start-dev.sh
+```
+This will:
+- Start the backend server on `http://localhost:8005`.
+- Start the frontend development server on `http://localhost:3000` (usually).
+- Open the application in your default web browser.
+
+---
+
 #### 1. Load a Model
 ```bash
 python hf_generate.py load-model gpt2
