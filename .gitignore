@@ -78,3 +78,13 @@ agenthub/agents/youtube/db
 
 # Mobile development
 android-sdk/ 
+# === SECRETS - NEVER COMMIT ===
+.env
+.env.*
+!.env.example
+*.env
+secrets/
+*password*
+*_key.txt
+*.pem
+*.key

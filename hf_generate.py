@@ -49,18 +49,17 @@ console = Console()
 
 # Enhanced ASCII Art Banner
 BANNER = """
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                                                                              ║
-║    ██╗  ██╗███████╗     ██████╗ ███████╗███╗   ██╗    ██████╗  █████╗ ███████╗    ║
-║    ██║  ██║██╔════╝    ██╔════╝ ██╔════╝████╗  ██║    ██╔══██╗██╔══██╗██╔════╝    ║
-║    ███████║█████╗      ██║  ███╗█████╗  ██╔██╗ ██║    ██║  ██║███████║███████╗    ║
-║    ██╔══██║██╔══╝      ██║   ██║██╔══╝  ██║╚██╗██║    ██║  ██║██╔══██║╚════██║    ║
-║    ██║  ██║██║         ╚██████╔╝███████╗██║ ╚████║    ██████╔╝██║  ██║███████║    ║
-║    ╚═╝  ╚═╝╚═╝          ╚═════╝ ╚══════╝╚═╝  ╚═══╝    ╚═════╝ ╚═╝  ╚═╝╚══════╝    ║
-║                                                                              ║
-║                   🎭 Artistic AI Generation Dashboard 🎨                    ║
-║                        Enhanced Edition v2.0                                ║
-╚══════════════════════════════════════════════════════════════════════════════╝
++------------------------------------------------------------------------------+
+|                                                                              |
+|    HH   HH GGGGGGG        H   H  GGGG   H   H   GGGG  H   H  GGGG   H   H      |
+|    H H H H G              H   H G       H   H  G      H   H G       H   H      |
+|    H  H  H G  GGGG        H H H G  GGGG H H H G  GGGG H H H G  GGGG H H H      |
+|    H     H G     G        H   H G     G H   H G     G H   H G     G H   H      |
+|    H     H  GGGGG         H   H  GGGG   H   H  GGGG   H   H  GGGG   H   H      |
+|                                                                              |
+|                   Artistic AI Generation Dashboard                           |
+|                        Enhanced Edition v2.0                                 |
++------------------------------------------------------------------------------+
 """
 
 class GenerationStyle(str, Enum):
@@ -149,7 +148,7 @@ class ModelManager:
         if torch.cuda.is_available():
             gpu_count = torch.cuda.device_count()
             gpu_name = torch.cuda.get_device_name(0)
-            console.print(f"🚀 [green]CUDA detected: {gpu_count} GPU(s) - {gpu_name}[/green]")
+            console.print(f"(Rocket) [green]CUDA detected: {gpu_count} GPU(s) - {gpu_name}[/green]")
             return "cuda"
         elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
             console.print("🍎 [green]Apple Silicon MPS detected[/green]")
@@ -452,13 +451,12 @@ def load_model(
         help="Force reload if model already loaded"
     )
 ):
-    """🧠 Load a Hugging Face model with enhanced validation"""
-    
+    "(Brain) Load a Hugging Face model with enhanced validation"    
     if not model_name:
         model_name = config_manager.config["default_model"]
-        console.print(f"📋 [blue]Using default model: {model_name}[/blue]")
+        console.print(f"(Clipboard) [blue]Using default model: {model_name}[/blue]")
     
-    console.print(f"\n🎨 [bold]Loading the creative engine: {model_name}[/bold]\n")
+    console.print(f"\n(Artist Palette) [bold]Loading the creative engine: {model_name}[/bold]\n")
     
     success = model_manager.load_model(model_name, task, force)
     if success:
@@ -474,26 +472,27 @@ def generate(
     save_output: bool = typer.Option(False, "--save", help="Save output to file"),
     model: str = typer.Option(None, "--model", help="Model to use (auto-loads if not specified)")
 ):
-    """✨ Generate text with enhanced controls"""
+    "(Sparkles) Generate text with enhanced controls"
     
-    console.print(f"\n🎪 [bold]Generating with style: {style.value}[/bold]")
-    console.print(Panel(prompt, title="📝 Your Prompt", border_style="blue"))
+    console.print(f"\n(Circus Tent) [bold]Generating with style: {style.value}[/bold]")
+    console.print(Panel(prompt, title="(Memo) Your Prompt", border_style="blue"))
     
     # Auto-load model if not already loaded
     if not model_manager.current_model:
         model_to_use = model or config_manager.config["default_model"]
-        console.print(f"🧠 [blue]Auto-loading model: {model_to_use}[/blue]")
+        console.print(f"(Brain) [blue]Auto-loading model: {model_to_use}[/blue]")
         success = model_manager.load_model(model_to_use)
         if not success:
-            console.print("💔 [bold red]Failed to load model![/bold red]")
+            console.print("(Broken Heart) [bold red]Failed to load model![/bold red]")
             return
     elif model and model != model_manager.current_model:
         # User specified a different model
-        console.print(f"🔄 [blue]Loading requested model: {model}[/blue]")
+        console.print(f"(Recycle) [blue]Loading requested model: {model}[/blue]")
         success = model_manager.load_model(model)
         if not success:
-            console.print("💔 [bold red]Failed to load requested model![/bold red]")
+            console.print("(Broken Heart) [bold red]Failed to load requested model![/bold red]")
             return
+
     
     # Create custom config if parameters provided
     custom_config = GenerationConfig(
@@ -533,32 +532,32 @@ def batch(
     output_dir: str = typer.Option("batch_output", help="Output directory"),
     model: str = typer.Option(None, "--model", help="Model to use (auto-loads if not specified)")
 ):
-    """🎭 Batch generate from file of prompts"""
+    "(Artist Palette) Batch generate from file of prompts"
     
     try:
         with open(file, 'r') as f:
             prompts = [line.strip() for line in f if line.strip()]
     except FileNotFoundError:
-        console.print(f"❌ [red]File not found: {file}[/red]")
+        console.print(f"(Cross Mark) [red]File not found: {file}[/red]")
         return
     
     # Auto-load model if not already loaded
     if not model_manager.current_model:
         model_to_use = model or config_manager.config["default_model"]
-        console.print(f"🧠 [blue]Auto-loading model: {model_to_use}[/blue]")
+        console.print(f"(Brain) [blue]Auto-loading model: {model_to_use}[/blue]")
         success = model_manager.load_model(model_to_use)
         if not success:
-            console.print("💔 [bold red]Failed to load model![/bold red]")
+            console.print("(Broken Heart) [bold red]Failed to load model![/bold red]")
             return
     elif model and model != model_manager.current_model:
         # User specified a different model
-        console.print(f"🔄 [blue]Loading requested model: {model}[/blue]")
+        console.print(f"(Recycle) [blue]Loading requested model: {model}[/blue]")
         success = model_manager.load_model(model)
         if not success:
-            console.print("💔 [bold red]Failed to load requested model![/bold red]")
+            console.print("(Broken Heart) [bold red]Failed to load requested model![/bold red]")
             return
     
-    console.print(f"📚 [blue]Processing {len(prompts)} prompts...[/blue]")
+    console.print(f"(Books) [blue]Processing {len(prompts)} prompts...[/blue]")
     
     results = studio.batch_generate(prompts, style)
     
@@ -572,13 +571,14 @@ def batch(
             f.write(f"Prompt: {result.prompt}\n\n")
             f.write(f"Generated Text:\n{result.generated_text}\n")
     
-    console.print(f"✅ [green]Batch complete! {len(results)} files saved to {output_dir}[/green]")
+    console.print(f"(Check Mark) [green]Batch complete! {len(results)} files saved to {output_dir}[/green]")
+
 
 @app.command()
 def interactive():
     """🎮 Enhanced interactive generation mode"""
     console.print(BANNER, style="bold cyan")
-    console.print("\n🎭 [bold]Welcome to Interactive Generation Studio v2.0![/bold]\n")
+    console.print("\n(Waving Hand) [bold]Welcome to Interactive Generation Studio v2.0![/bold]\n")
     
     if not model_manager.current_model:
         if Confirm.ask("No model loaded. Would you like to load the default model?"):
@@ -586,14 +586,14 @@ def interactive():
         else:
             return
     
-    console.print("\n💡 [italic]Commands: 'quit', 'history', 'models', 'config', 'clear'[/italic]\n")
+    console.print("\n(Light Bulb) [italic]Commands: 'quit', 'history', 'models', 'config', 'clear'[/italic]\n")
     
     while True:
         try:
-            prompt = Prompt.ask("\n🎨 [bold cyan]Enter your creative prompt[/bold cyan]")
+            prompt = Prompt.ask("\n(Artist Palette) [bold cyan]Enter your creative prompt[/bold cyan]")
             
             if prompt.lower() == 'quit':
-                console.print("👋 [bold]Thank you for creating with us![/bold]")
+                console.print("(Waving Hand) [bold]Thank you for creating with us![/bold]")
                 break
             elif prompt.lower() == 'history':
                 show_history()
@@ -609,14 +609,14 @@ def interactive():
                 continue
             
             # Advanced parameter selection
-            if Confirm.ask("🔧 Customize generation parameters?", default=False):
+            if Confirm.ask("(Wrench) Customize generation parameters?", default=False):
                 style = Prompt.ask(
-                    "🎭 Choose style",
+                    "(Artist Palette) Choose style",
                     choices=[s.value for s in GenerationStyle],
                     default=config_manager.config["default_style"]
                 )
-                max_length = IntPrompt.ask("📏 Max length", default=150)
-                temperature = FloatPrompt.ask("🌡️ Temperature", default=0.7)
+                max_length = IntPrompt.ask("(Ruler) Max length", default=150)
+                temperature = FloatPrompt.ask("(Thermometer) Temperature", default=0.7)
                 
                 custom_config = GenerationConfig(
                     max_length=max_length,
@@ -629,8 +629,8 @@ def interactive():
             
             if result:
                 console.print(Panel(
-                    f"{result.generated_text}\n\n[dim]⏱️ {result.generation_time:.2f}s | 📊 {result.token_count} tokens[/dim]",
-                    title="✨ Your Creation",
+                    f"{result.generated_text}\n\n[dim](Stopwatch) {result.generation_time:.2f}s | (Bar Chart) {result.token_count} tokens[/dim]",
+                    title="(Sparkles) Your Creation",
                     border_style="magenta"
                 ))
                 
@@ -649,7 +649,7 @@ def history(
 def show_history(limit: int = 10, export: bool = False):
     """Display generation history with enhanced formatting"""
     if not studio.generation_history:
-        console.print("📭 [yellow]No generations yet! Start creating![/yellow]")
+        console.print("(Mailbox) [yellow]No generations yet! Start creating![/yellow]")
         return
     
     if export:
@@ -663,16 +663,16 @@ def show_history(limit: int = 10, export: bool = False):
         
         with open(filename, 'w') as f:
             json.dump(history_data, f, indent=2)
-        console.print(f"💾 [green]History exported to {filename}[/green]")
+        console.print(f"(Floppy Disk) [green]History exported to {filename}[/green]")
         return
     
-    table = Table(title="🎨 Generation History", show_header=True, header_style="bold magenta")
-    table.add_column("🕐 Time", style="dim", width=8)
-    table.add_column("📝 Prompt", style="cyan", width=30)
-    table.add_column("🎭 Style", style="green", width=12)
-    table.add_column("⏱️ Time", style="yellow", width=6)
-    table.add_column("📊 Tokens", style="blue", width=8)
-    table.add_column("🎨 Preview", style="white", width=40)
+    table = Table(title="(Artist Palette) Generation History", show_header=True, header_style="bold magenta")
+    table.add_column("(Clock) Time", style="dim", width=8)
+    table.add_column("(Memo) Prompt", style="cyan", width=30)
+    table.add_column("(Artist Palette) Style", style="green", width=12)
+    table.add_column("(Stopwatch) Time", style="yellow", width=6)
+    table.add_column("(Bar Chart) Tokens", style="blue", width=8)
+    table.add_column("(Artist Palette) Preview", style="white", width=40)
     
     recent_entries = studio.generation_history[-limit:]
     for entry in recent_entries:
@@ -708,18 +708,18 @@ def show_history(limit: int = 10, export: bool = False):
 
 def show_models():
     """Enhanced model display"""
-    console.print("\n🎭 [bold]Model Gallery[/bold]\n")
+    console.print("\n(Artist Palette) [bold]Model Gallery[/bold]\n")
     
     # Currently loaded models
     if model_manager.models:
-        loaded_table = Table(title="🟢 Loaded Models", show_header=True, header_style="bold green")
+        loaded_table = Table(title="(Green Circle) Loaded Models", show_header=True, header_style="bold green")
         loaded_table.add_column("Model", style="cyan")
         loaded_table.add_column("Type", style="yellow")
         loaded_table.add_column("Loaded At", style="dim")
         loaded_table.add_column("Current", style="green")
         
         for name, data in model_manager.models.items():
-            is_current = "✅" if name == model_manager.current_model else ""
+            is_current = "(Check Mark)" if name == model_manager.current_model else ""
             loaded_at = datetime.fromisoformat(data["loaded_at"]).strftime("%H:%M:%S")
             model_type = data["info"].get("model_type", "unknown")
             
@@ -728,11 +728,12 @@ def show_models():
         console.print(loaded_table)
     
     # Recommended models
-    recommended_table = Table(title="🌟 Recommended Models", show_header=True, header_style="bold blue")
+    recommended_table = Table(title="(Star) Recommended Models", show_header=True, header_style="bold blue")
     recommended_table.add_column("Model Name", style="cyan")
     recommended_table.add_column("Best For", style="green")
     recommended_table.add_column("Size", style="yellow")
     recommended_table.add_column("Speed", style="magenta")
+
     
     recommended = [
         ("microsoft/DialoGPT-medium", "Conversational AI", "Medium", "Fast"),
@@ -750,7 +751,7 @@ def show_models():
 
 def show_config():
     """Display current configuration"""
-    config_table = Table(title="⚙️ Configuration", show_header=False)
+    config_table = Table(title="(Gear) Configuration", show_header=False)
     config_table.add_column("Setting", style="cyan")
     config_table.add_column("Value", style="white")
     
@@ -761,7 +762,7 @@ def show_config():
 
 @app.command()
 def models():
-    """🧠 Show enhanced model information"""
+    """(Brain) Show enhanced model information"""
     show_models()
 
 @app.command()
@@ -769,7 +770,7 @@ def config(
     key: str = typer.Argument(None, help="Configuration key to modify"),
     value: str = typer.Argument(None, help="New value")
 ):
-    """⚙️ View or modify configuration"""
+    """(Gear) View or modify configuration"""
     if not key:
         show_config()
         return
@@ -798,14 +799,14 @@ def config(
 def unload(
     model_name: str = typer.Argument(None, help="Model to unload (current if not specified)")
 ):
-    """🗑️ Unload a model to free memory"""
+    """(Trashcan) Unload a model to free memory"""
     success = model_manager.unload_model(model_name)
     if not success:
-        console.print("❌ [red]No model to unload[/red]")
+        console.print("(Cross Mark) [red]No model to unload[/red]")
 
 @app.command()
 def stats():
-    """📊 Show enhanced session statistics"""
+    """(Bar Chart) Show enhanced session statistics"""
     if not studio.generation_history:
         console.print("📭 [yellow]No generations yet![/yellow]")
         return
@@ -858,7 +859,7 @@ def export_session(
     ),
     format: str = typer.Option("json", help="Export format (json, csv, txt)")
 ):
-    """💾 Export session with multiple formats"""
+    "(Floppy Disk) Export session with multiple formats"
     if not filename:
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         filename = f"hf_session_{timestamp}.{format}"
@@ -901,10 +902,10 @@ def export_session(
                     f.write(f"Generated: {entry.generated_text}\n")
                     f.write(f"Stats: {entry.generation_time:.2f}s, {entry.token_count} tokens\n\n")
         
-        console.print(f"💾 [bold green]Session exported to {filename}[/bold green]")
+        console.print(f"(Floppy Disk) [bold green]Session exported to {filename}[/bold green]")
         
     except Exception as e:
-        console.print(f"💥 [bold red]Export failed: {str(e)}[/bold red]")
+        console.print(f"(Explosion) [bold red]Export failed: {str(e)}[/bold red]")
 
 @app.command()
 def benchmark(
@@ -912,7 +913,8 @@ def benchmark(
     iterations: int = typer.Option(5, help="Number of iterations"),
     styles: List[GenerationStyle] = typer.Option([GenerationStyle.CREATIVE], help="Styles to benchmark")
 ):
-    """🏃 Benchmark generation performance"""
+    "(Runner) Benchmark generation performance"
+
     if not model_manager.current_model:
         console.print("💔 [bold red]No model loaded![/bold red]")
         return
@@ -966,7 +968,7 @@ def benchmark(
 if __name__ == "__main__":
     # Check dependencies
     if not HF_AVAILABLE:
-        console.print(f"⚠️ [bold yellow]Warning: Transformers not available: {IMPORT_ERROR}[/bold yellow]")
+        console.print(f"(Warning) [bold yellow]Warning: Transformers not available: {IMPORT_ERROR}[/bold yellow]")
         console.print("Install with: pip install transformers torch\n")
     
     # Show splash screen on startup
